@@ -18,7 +18,10 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 
-#from estadisticas import views
+from menus import views
+
+
+from mesas import views
 
 def home(request):
     return render(request, 'sitio_admin.html')
@@ -26,4 +29,6 @@ def home(request):
 urlpatterns = [
     path('', home, name='home'),  # Página de inicio
     path('admin/', admin.site.urls),  # Administración
+    path('reservar/', views.reservar_mesa, name='reservar_mesa'),
+    path('reserva_exitosa/', views.reserva_exitosa, name='reserva_exitosa'),
 ]

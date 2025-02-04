@@ -10,3 +10,5 @@ def index(request):
     categorias = Categoria.objects.all()
     return render(request, 'index.html',
                   context={'p': productos, 'c': categorias})
+
+
