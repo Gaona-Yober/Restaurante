@@ -148,7 +148,7 @@ class Reserva(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
     cantidad_personas = models.IntegerField()
     fecha_reserva = models.DateField()
-    horario_inicio = models.DateTimeField()
+    horario_inicio = models.DateTimeField(null=True, blank=True)
     hora_reserva_finalizada = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(
         max_length=15,

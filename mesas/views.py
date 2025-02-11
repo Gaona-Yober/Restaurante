@@ -1,67 +1,92 @@
+from datetime import datetime
 from datetime import timezone
-
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from .models import Reserva, Persona
 from .forms import ReservaForm
-from .models import Reserva, Cliente, Mesa, EstadoMesa
 
-
-from datetime import timezone
-
-from django.shortcuts import render, redirect
-from .forms import ReservaForm
-from .models import Reserva, Cliente, Mesa, EstadoMesa
-
-
-from django.shortcuts import render, redirect
-from .models import Reserva, Cliente, Mesa, EstadoMesa
-
-def reservar_mesa(request):
+def reserva_mesa(request):
     if request.method == 'POST':
-        # Obtener los datos del formulario
-        nombre = request.POST.get('nombre')  # Puede ser None si no está configurado en el formulario.
-        fecha = request.POST.get('fecha')  # Cambiado a 'fecha' para coincidir con el formulario HTML.
-        hora = request.POST.get('hora')  # Cambiado a 'hora' para coincidir con el formulario HTML.
+        form = ReservaForm(request.POST)
+        if form.is_valid():
+            reserva = form.save(commit=False)
+            # Validar o asignar 'horario_inicio'
+            if not reserva.horario_inicio:
+                reserva.horario_inicio = datetime.now(timezone.utc)
+            reserva.save()
+            return redirect('reserva_exitosa')
+    else:
+        form = ReservaForm()
 
-        # Validar cantidad de personas
-        cantidad_personas_str = request.POST.get('personas', '')  # Cambiado a 'personas' para coincidir con el formulario HTML.
-        if not cantidad_personas_str.isdigit():  # Comprobar si es un número válido
-            return render(request, 'error.html',
-                          {'mensaje': 'Cantidad de personas no válida. Por favor, ingrese un número.'})
-
-        # Convertir a entero después de validar
-        cantidad_personas = int(cantidad_personas_str)
-
-        # Crear o obtener el cliente
-        cliente, created = Cliente.objects.get_or_create(
-            defaults={
-                'nombre': nombre,
-                'cedula_persona': '0000000000',  # Puedes pedir la cédula en el formulario si es necesario
-                'telefono': '0000000000'  # Puedes pedir el teléfono en el formulario si es necesario
-            }
-        )
-
-        # Seleccionar una mesa (sin validar disponibilidad)
-        mesa = Mesa.objects.first()  # Selecciona la primera mesa disponible en la base de datos
-
-        # Crear la reserva usando el método del cliente
-        try:
-            reserva = cliente.hacer_reserva({
-                'mesa': mesa,
-                'cantidad_personas': cantidad_personas,
-                'fecha_reserva': fecha,
-                'horario_inicio': f"{fecha}T{hora}"  # Combinar fecha y hora para el campo DateTimeField
-            })
-        except Exception as e:
-            return render(request, 'error.html', {'mensaje': str(e)})
-
-        # Cambiar el estado de la mesa a RESERVADA
-        mesa.cambiar_estado(EstadoMesa.RESERVADA.name)
-
-        # Redirigir a una página de éxito
-        return redirect('reserva_exitosa')
-
-    # Si no es POST, mostrar el formulario
-    return render(request, 'reservas.html')
-
+    return render(request, 'sitio_reserva.html', {'form': form})
 def reserva_exitosa(request):
     return render(request, 'reserva_exitosa.html')
+
+
+def modificar_reserva(request, reserva_id):
+    reserva = Reserva.objects.get(id=reserva_id)
+
+    if request.method == 'POST':
+        form = ReservaForm(request.POST, instance=reserva)
+        if form.is_valid():
+            form.save()
+            return redirect('reserva_exito')
+    else:
+        form = ReservaForm(instance=reserva)
+
+    return render(request, 'modificar_reserva.html', {'form': form, 'reserva': reserva})
+
+
+def iniciar_sesion(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if username == 'yobergaona21' and password == 'yober1234':
+            return redirect('/inventariofacturacion/')
+        else:
+            error_message = "Usuario o contraseña incorrectos"
+            return render(request, 'login.html', {'error': error_message})
+    return render(request, 'login.html')
+
+def reserva(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        cedula = request.POST.get('cedula')
+        email = request.POST.get('email')
+        telefono = request.POST.get('telefono')
+
+
+        Persona.objects.create(
+            nombre=nombre,
+            cedula_persona=cedula,
+            email=email,
+            telefono=telefono
+        )
+
+        return redirect('reserva_exitosa')
+
+    return render(request, 'reserva.html')
+
+
+@csrf_exempt
+def guardar_persona(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        cedula = request.POST.get('cedula')
+        email = request.POST.get('email')
+        telefono = request.POST.get('telefono')
+
+        try:
+            Persona.objects.create(
+                nombre=nombre,
+                cedula_persona=cedula,
+                email=email,
+                telefono=telefono
+            )
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'})

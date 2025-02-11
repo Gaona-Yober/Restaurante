@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú del Restaurante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background: #b71c1c;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .menu-item {
+            background: #ffeee0;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 15px;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+            cursor: pointer;
+        }
+        .menu-item img {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .menu-item h3 {
+            color: #b71c1c;
+            font-size: 18px;
+        }
+        .menu-item p {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .description-container {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin: 20px auto;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        footer {
+            background: #b71c1c;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>Menú del Restaurante</header>
+
+    <div class="menu-container">
+        <div class="menu-item" onclick="mostrarDescripcion('Arroz con pollo', 'Un delicioso plato de arroz con trozos de pollo, vegetales y especias.', 'static/images/plato1.jpg')">
+            <img src="/static/images/plato1.jpg" alt="Arroz con pollo">
+            <h3>Arroz con pollo</h3>
+            <p>$2.50</p>
+        </div>
+
+        <div class="menu-item" onclick="mostrarDescripcion('Sopa de verduras', 'Sopa caliente con una mezcla de vegetales frescos y hierbas aromáticas.', 'static/images/sopas.jpg')">
+            <img src="/static/images/sopas.jpg" alt="Sopa de verduras">
+            <h3>Sopa de verduras</h3>
+            <p>$1.75</p>
+        </div>
+
+        <div class="menu-item" onclick="mostrarDescripcion('Arroz con carne', 'Arroz con carne de res, acompañado de especias y vegetales.', 'static/images/plato3.jpg')">
+            <img src="/static/images/plato3.jpg" alt="Arroz con carne">
+            <h3>Arroz con carne</h3>
+            <p>$3.00</p>
+        </div>
+
+        <div class="menu-item" onclick="mostrarDescripcion('Motepillo', 'Plato típico con mote, huevo, achiote y queso.', 'static/images/plato4.jpg')">
+            <img src="/static/images/plato4.jpg" alt="Motepillo">
+            <h3>Motepillo</h3>
+            <p>$2.50</p>
+        </div>
+
+        <div class="menu-item" onclick="mostrarDescripcion('Tamal', 'Masa de maíz rellena de carne y envuelta en hoja de plátano.', 'static/images/plato5.JPG')">
+            <img src="/static/images/plato5.JPG" alt="Tamal">
+            <h3>Tamal</h3>
+            <p>$1.50</p>
+        </div>
+    </div>
+
+    <div class="description-container" id="descripcion">
+        <h2 id="desc-titulo"></h2>
+        <img id="desc-img" src="" alt="" style="width: 150px; height: 100px; border-radius: 8px;">
+        <p id="desc-texto"></p>
+    </div>
+
+    <footer>&copy; 2025 Restaurante. Todos los derechos reservados.</footer>
+
+    <script>
+        function mostrarDescripcion(titulo, descripcion, imagen) {
+            document.getElementById("desc-titulo").innerText = titulo;
+            document.getElementById("desc-texto").innerText = descripcion;
+            document.getElementById("desc-img").src = "/" + imagen;
+            document.getElementById("descripcion").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante</title>
+    {% load static %}
+
+</head>
+<body>
+    <header style="background: red; color: white; padding: 10px; text-align: center;">
+        <h1>Bienvenido a Nuestro Restaurante</h1>
+    </header>
+
+    <nav style="text-align: center; padding: 10px;">
+        <a href="/" style="margin: 0 15px;">Inicio</a>
+        <a href="/menus/" style="margin: 0 15px;">Menú</a>
+        <a href="/contacto/" style="margin: 0 15px;">Contacto</a>
+    </nav>
+
+    <main style="padding: 20px;">
+        {% block content %}
+        <!-- Aquí se insertará el contenido de las otras páginas -->
+        {% endblock %}
+    </main>
+
+    <footer style="background: red; color: white; text-align: center; padding: 10px; margin-top: 20px;">
+        <p>&copy; 2025 Restaurante. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
